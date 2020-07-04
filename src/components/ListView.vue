@@ -8,7 +8,7 @@
           </b-button>
           {{ i.name }}
 
-        <Itemview v-on:getItems='getItems' v-bind:listId='listId' v-bind:items='items'/>
+        <Itemview v-on:getItems='getItems' v-bind:listId='listId' v-bind:items='items' />
 
         </b-tab>
 
@@ -37,7 +37,6 @@ export default {
       delay: 700,
       clicks: 0,
       timer: null,
-      items: [],
     }
   },
     components: {
@@ -47,6 +46,7 @@ export default {
     userId: Number,
     lists: Array,
     listId: Number,
+    items: Array,
     },
   created: function() {
   },

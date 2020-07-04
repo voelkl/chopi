@@ -166,8 +166,9 @@ app.post("/item", function(req, res){
   })
 })
     
-app.get("/items", function(req,res){
-  let sql = `SELECT * FROM items WHERE list_id=${req.body.list_id}`
+app.get("/items/:id", function(req,res){
+  console.log(req.body)
+  let sql = `SELECT * FROM items WHERE list_id=${req.params.id}`
   DB.all(sql, function(err, row){
     if(err){
       throw err

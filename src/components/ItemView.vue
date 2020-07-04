@@ -1,8 +1,8 @@
 <template>
     <div>
-        <b-form-input v-model="text" placeholder="Enter your item" v-on:focus="getItem" v-on:keyup.enter="newItem"></b-form-input>
+        <b-form-input v-model="text" placeholder="Enter your item" v-on:keyup.enter="newItem"></b-form-input>
         <b-list-group>
-            <b-list-group-item v-on:click='editItem(i.id)' contenteditable="false" v-for="i in items" :key="'dyn-item-' + i.id" :id="'item'+i.id" :title="i.name">
+            <b-list-group-item v-on:click='editItem(i.id)' contenteditable="false" v-for="i in this.items" :key="'dyn-item-' + i.id" :id="'item'+i.id" :title="i.name">
                 {{items.name}}
             </b-list-group-item>
         </b-list-group>
@@ -28,15 +28,13 @@ export default {
     methods: {
         mounted(){
         },
-        getItem(){
-            console.log(this.listId)
-        },
         newItem() {
+            console.log(this.items, this.text)
             axios.post("http://localhost:4000/item", {
                 list_id: this.listId,
                 name: this.text
         }).then(()=>{
-            this.$emit('getItems', this.listId)
+            this.text = ''
         }).catch((err)=>console.log(err))
         },
         deleteTab(id){

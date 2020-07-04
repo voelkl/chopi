@@ -5,7 +5,7 @@
       <Login v-on:submitLogin='handleLoginStatus'/>
     </div>
     <div v-show='loginState'>
-      <ListView v-bind:userId='userId' v-bind:listId='listId' v-bind:lists='lists' v-on:getLists='getLists' v-on:updateListId='updateListId'/>
+      <ListView v-bind:userId='userId' v-bind:listId='listId' v-bind:items='items' v-bind:lists='lists' v-on:getLists='getLists' v-on:updateListId='updateListId' v-on:getItems='getItems'/>
     </div>
   </div>
 </template>
@@ -22,7 +22,8 @@ export default {
       loginState: false,
       userId: 0,
       lists: [],
-      listId: 0
+      listId: 0,
+      items: [],
     }
   },
   components: {
@@ -38,12 +39,18 @@ export default {
     getLists(userId){
       axios.get(`http://localhost:4000/lists/${userId}`).then((lists)=>{
         this.lists=lists.data
-        console.log(lists.data[0].id)
         this.updateListId(lists.data[0].id)
+        this.getItems(this.listId)
       }).catch((err)=>console.log(err))
     },
     updateListId(id){
       this.listId= id
+    },
+    getItems(id){
+      axios.get(`http://localhost:4000/items/${id}`).then((items)=>{
+        console.log(items.data)
+        this.items=items.data
+      }).catch((err)=>console.log(err))
     }
   }
 }
