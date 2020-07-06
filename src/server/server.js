@@ -50,7 +50,7 @@ app.post('/register', function(req, res){
         }','${hash}')`;
         DB.run(sql, function(err) {
           if (err) {
-              console.log(err)
+              console.error(err)
             throw err;
           } else {
             return res.json({
@@ -167,7 +167,6 @@ app.post("/item", function(req, res){
 })
     
 app.get("/items/:id", function(req,res){
-  console.log(req.body)
   let sql = `SELECT * FROM items WHERE list_id=${req.params.id}`
   DB.all(sql, function(err, row){
     if(err){
@@ -178,6 +177,7 @@ app.get("/items/:id", function(req,res){
 })
 
 app.put("/item/:id", function(req,res){
+  console.log(req.params.id, req.body.name)
   let sql = `UPDATE items SET name='${req.body.name}' WHERE id=${req.params.id}`
   DB.run(sql, function(err){
     if(err){

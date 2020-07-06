@@ -6,9 +6,10 @@
           <b-button size="sm" variant="danger" class="float-right" @click="deleteTab(i.id)">
             X
           </b-button>
-          {{ i.name }}
+          <h3>{{ i.name }}</h3>
+          
 
-        <Itemview v-on:getItems='getItems' v-bind:listId='listId' v-bind:items='items' />
+        <Itemview v-on="$listeners" v-bind:listId='listId' v-bind:items='items' />
 
         </b-tab>
 
@@ -47,6 +48,9 @@ export default {
     lists: Array,
     listId: Number,
     items: Array,
+    getItems: Function,
+    updateListId: Function,
+    getLists: Function,
     },
   created: function() {
   },
@@ -83,7 +87,6 @@ export default {
           if(this.clicks === 1) {
             var self = this
             this.$emit('updateListId', id)
-            console.log(this.listId)
             this.timer = setTimeout(function() {
               self.clicks = 0
             }, this.delay);
@@ -94,13 +97,7 @@ export default {
              selectTab.contentEditable = true
              this.addEventListenerForInput(id)
           }        	
-    },
-    getItems(listId){
-      axios.get(`http://localhost:4000/items/`, {list_id: listId}).then((items)=>{
-        console.log(items.data)
-        this.lists=items.data
-      }).catch((err)=>console.log(err))
-    },
+    }
   }
 
 }
@@ -109,6 +106,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
-  margin: 40px 0 0;
+  margin: 0 0 20px 0;
 }
 </style>

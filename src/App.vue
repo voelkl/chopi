@@ -5,7 +5,14 @@
       <Login v-on:submitLogin='handleLoginStatus'/>
     </div>
     <div v-show='loginState'>
-      <ListView v-bind:userId='userId' v-bind:listId='listId' v-bind:items='items' v-bind:lists='lists' v-on:getLists='getLists' v-on:updateListId='updateListId' v-on:getItems='getItems'/>
+      <ListView 
+        v-bind:userId='userId' 
+        v-bind:listId='listId' 
+        v-bind:items='items' 
+        v-bind:lists='lists' 
+        v-on:getLists='getLists' 
+        v-on:updateListId='updateListId' 
+        v-on:getItems='getItems'/>
     </div>
   </div>
 </template>
@@ -45,10 +52,10 @@ export default {
     },
     updateListId(id){
       this.listId= id
+      this.getItems(id)
     },
     getItems(id){
       axios.get(`http://localhost:4000/items/${id}`).then((items)=>{
-        console.log(items.data)
         this.items=items.data
       }).catch((err)=>console.log(err))
     }

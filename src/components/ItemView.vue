@@ -2,8 +2,15 @@
     <div>
         <b-form-input v-model="text" placeholder="Enter your item" v-on:keyup.enter="newItem"></b-form-input>
         <b-list-group>
-            <b-list-group-item v-on:click='editItem(i.id)' contenteditable="false" v-for="i in this.items" :key="'dyn-item-' + i.id" :id="'item'+i.id" :title="i.name">
-                {{items.name}}
+            <b-list-group-item 
+                    v-on:click='editItem(i.id)' 
+                    contenteditable="false" 
+                    v-for="i in this.items" 
+                    :key="'dyn-item-' + i.id" 
+                    :id="'item'+i.id" 
+                    :title="i.name"
+                >
+                    {{i.name}}
             </b-list-group-item>
         </b-list-group>
     </div>
@@ -23,18 +30,19 @@ export default {
     props:{
         listId: Number,
         items: Array,
+        getItems: Function,
     },
 
     methods: {
         mounted(){
         },
         newItem() {
-            console.log(this.items, this.text)
             axios.post("http://localhost:4000/item", {
                 list_id: this.listId,
                 name: this.text
         }).then(()=>{
             this.text = ''
+            this.$emit('getItems', this.listId)
         }).catch((err)=>console.log(err))
         },
         deleteTab(id){
@@ -43,22 +51,33 @@ export default {
         addEventListenerForInput(id){
             let self = this
             let myEditableElement = document.getElementById(`item${id}`);
-            myEditableElement.addEventListener('input', function() {
-                console.log('An edit input has been detected');
-                console.log(myEditableElement.innerHTML);
+            myEditableElement.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    myEditableElement.contentEditable = false
+                    axios.put(`http://localhost:4000/item/${id}`,{name:myEditableElement.innerHTML} ).then(()=>
+                    self.$emit('getItems', self.listId))
+                }
             });
             myEditableElement.addEventListener('focusout', function(){
-                let myEditableElement = document.getElementById(`item${id}`);
                 myEditableElement.contentEditable = false
                 axios.put(`http://localhost:4000/item/${id}`,{name:myEditableElement.innerHTML} ).then(()=>
-                self.$emit('getItems', this.listId)
+                self.$emit('getItems', self.listId)
             )
         })
         },
-        
+        toggleStrike(id){
+            let item = document.getElementById(`item${id}`)
+            if(item.classList.contains('strike')){
+                item.classList.remove('strike')
+            }else{
+                item.classList.add('strike')
+            }
+            
+        },     
         editItem(id){
         this.clicks++ 
             if(this.clicks === 1) {
+                this.toggleStrike(id)
                 var self = this
                 this.timer = setTimeout(function() {
                 self.clicks = 0
@@ -74,3 +93,8 @@ export default {
     }
 }
 </script>
+<style scoped>
+    .strike{
+        text-decoration: line-through;
+    }
+</style>
